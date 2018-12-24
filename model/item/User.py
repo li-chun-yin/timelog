@@ -1,18 +1,16 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pymongo import MongoClient, errors
-from flask import current_app
+from model.client import Client
 
-class User(object):
+def collection():
+    users = Client.DB['user']
+    return users
+
+class Entity(object):
     
-    __slots__ = ('user_id', 'user_name', 'user_password')
+    __slots__ = ('id', 'user_name', 'user_password')
      
     def __init__(self, **kw):
-        
-        User._connection    = MongoClient(current_app.config['MONGODB_DNS'])
-        User._db            = self._connection.timelog
-        User._collection    = self._db.user
         
         for item in kw:
             setattr(self, item, kw[item])
@@ -20,25 +18,22 @@ class User(object):
     def toMongoJson(self):
         
         return {
-            '_id'           : getattr(self, 'user_id', None),
-            'name'          : self.user_name,
-            'password'      : self.user_password,
+            '_id'           : self._id,
+            'user_name'     : self.user_name,
+            'user_password' : self.user_password,
         };
         
     def save(self):
         
-        if getattr(self, 'user_id', None) == None:
-            self.user_id    = User._collection.insert_one({
-                'name'      : self.user_name,
-                'password'  : self.user_password
+        if getattr(self, '_id', None) == None:
+            self._id                = collection().insert_one({
+                'user_name'         : self.user_name,
+                'user_password'     : self.user_password
             }).inserted_id
         else:
-            User._collection.save({
-                '_id'       : self.user_id,
-                'name'      : self.user_name,
-                'password'  : self.user_password
+            collection().save({
+                '_id'           : self._id,
+                'user_name'     : self.user_name,
+                'user_password' : self.user_password
             })
         return self
-    
-    def __call__(self):
-        pass

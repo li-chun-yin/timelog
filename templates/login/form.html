@@ -1,0 +1,64 @@
+{% extends '_layout/blank.html' %}
+
+{% block body_class %}hold-transition login-page{% endblock %}
+
+{% block body %}
+<div class="login-box">
+  <div class="login-logo">时间，不会飞！</div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">授权登录</p>
+    <form action="{{ url_for('login_action') }}" method="post">
+      <div class="form-group has-feedback">
+        <input type="text" name="login_name" class="form-control" placeholder="请输入登录账号">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div id="sendmail-container">
+	      <div class="row">
+	        <div class="col-xs-4 pull-right">
+	          <button type="button" class="btn btn-primary btn-block btn-flat" onclick="doSendEmail(this)">登录</button>
+	        </div>
+	        <!-- /.col -->
+	      </div>
+      </div>
+      <div id="loginbtn-container" style="display:none">      
+	      <div class="form-group has-feedback">
+	        <input type="password" name="login_password" class="form-control" placeholder="请输入授权验证码">
+	        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+	      </div>
+	      <div class="row">
+	        <div class="col-xs-4 pull-right">
+	          <button type="button" class="btn btn-primary btn-block btn-flat" onclick="doLogin(this)">登录</button>
+	        </div>
+	        <!-- /.col -->
+	      </div>
+      </div>
+    </form>
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+{% endblock %}
+
+{% block bodyscript %}
+{{ super() }}
+<script type="text/javascript">
+	var doLogin	= function(ev){
+		jQuery.post(jQuery(ev).closest('form').prop('action'), jQuery(ev).closest('form').serialize(), function(json){
+			if(checkAjaxResponse(json)){
+				location.href="{{ url_for('home') }}";
+			}
+		}, 'json');
+	}
+	
+	var doSendEmail = function(ev){
+		jQuery.post('{{ url_for("login_email") }}', jQuery(ev).closest('form').serialize(), function(json){
+			if(checkAjaxResponse(json)){
+				alert('请输入授权验证码已发送至你的email，请注意查收。');
+				jQuery('#sendmail-container').hide();
+				jQuery('#loginbtn-container').show();
+			}
+		}, 'json');		
+	}
+</script>
+{% endblock %}

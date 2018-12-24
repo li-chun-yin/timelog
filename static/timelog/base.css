@@ -1,0 +1,53 @@
+.table-fixed {
+	table-layout: fixed;
+}
+
+/*************************************************************************************************************
+ * 分页
+ *************************************************************************************************************/
+.nav-page {
+  padding: 5px 0;
+  text-align: center;
+}
+.nav-page .total {
+  float: left;
+  padding: 6px 0;
+}
+
+.nav-page .pagination {
+  margin: 0;
+}
+
+.nav-page .quick {
+  margin-left: 2em;
+  display: inline-block;
+}
+
+.nav-page .pagination li a {
+  color: #5d5b5c;
+}
+
+.nav-page .pagination li.active a {
+  background: $btn-default-bg;
+  color: #ffffff;
+  border-color: #e9e9e9; 
+}
+
+.nav-page .pagination li a.last{
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.nav-page .quick label {
+  font-weight: normal;
+}
+
+.nav-page .quick input {
+  width: 40px;
+  margin: 0 10px;
+}
+
+.nav-page .quick .btn {
+  vertical-align: baseline;
+}
+/*************************************************************************************************************/

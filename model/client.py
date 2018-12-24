@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from pymongo import MongoClient
+from flask import current_app
 
 class Client(object):
     
-    def getConnection(self):
-        return MongoClient('mongodb://localhost:27017/');
+    CONNECTION  = MongoClient(current_app.config['MONGODB_DNS'])
+    DB          = CONNECTION.timelog 
     

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from controller import home
-from controller import calendar
+from controller import home, login, calendar
 from flask import Flask
 from pymongo import MongoClient
 
@@ -26,6 +25,12 @@ app.config.from_pyfile('config.py')
 app.add_url_rule('/', 'home', home.index)
     
 app.add_url_rule('/calendar', 'calendar', calendar.index)
+
+app.add_url_rule('/login', 'login', login.form)
+
+app.add_url_rule('/login-email', 'login_email', login.email)
+
+app.add_url_rule('/login-action', 'login_action', login.action)
     
 if __name__ == '__main__':
     app.debug = True
