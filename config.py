@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 DEBUG                   = True
+SECRET_KEY              = 'timelog_key'
+
 MONGODB_DNS             = 'mongodb://localhost:27017/'
 MONGODB_DATABASE        = 'timelog'
 

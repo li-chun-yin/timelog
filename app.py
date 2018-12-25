@@ -1,37 +1,46 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from controller import home, login, calendar
 from flask import Flask
-from pymongo import MongoClient
 
 app = Flask(__name__)
 
 app.config.from_pyfile('config.py')
-
-# _connection     = MongoClient(app.config['MONGODB_DNS'])
-# _db             = _connection.timelog
-# data            = _db.account.find()
-# print(_db.account.count());
-# print(_db.account.index_information())
-# for i in data:
-#     print(i)
-    
-# _db.account2.create_index('account_type', unique=True)
-# print(_db.user.index_information())
-# print(_db.account2.index_information())
-
  
-app.add_url_rule('/', 'home', home.index)
+@app.route('/', methods=['GET'])
+def home():
+    from controller import home 
+    return home.index()
     
-app.add_url_rule('/calendar', 'calendar', calendar.index)
+@app.route('/login', methods=['GET'])
+def login():
+    from controller import login 
+    return login.form()
 
-app.add_url_rule('/login', 'login', login.form)
+@app.route('/login-email', methods=['POST'])
+def login_email():
+    from controller import login 
+    return login.email()
 
-app.add_url_rule('/login-email', 'login_email', login.email)
+@app.route('/login-action', methods=['POST'])
+def login_action():
+    from controller import login 
+    return login.action()
 
-app.add_url_rule('/login-action', 'login_action', login.action)
+@app.route('/calendar', methods=['GET'])
+def calendar():
+    from controller import calendar
+    return calendar.index()
+
+@app.route('/calendar-tag', methods=['GET'])
+def calendar_tag():
+    from controller import calendar
+    return calendar.tag()
+
+@app.route('/calendar-tag-add', methods=['POST'])
+def calendar_tag_add():
+    from controller import calendar
+    return calendar.addTag()
     
 if __name__ == '__main__':
-    app.debug = True
     app.run()

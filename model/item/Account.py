@@ -21,21 +21,4 @@ class Entity(object):
     def __init__(self, **kw):
         
         for item in kw:
-            setattr(self, item, kw[item])
-            
-    def save(_id, account_type, account_value, 'user'):
-        
-        if getattr(self, '_id', None) == None:
-            self._id = collection().insert_one({
-                'account_type'  : self.account_type,
-                'account_value' : self.account_value,
-                'user'          : self.user.toMongoJson()
-            }).inserted_id
-        else:
-            collection().save({
-                '_id'           : self._id,
-                'account_type'  : self.account_type,
-                'account_value' : self.account_value,
-                'user'          : self.user.toMongoJson()
-            })
-        return self    
+            setattr(self, item, kw[item]) 
