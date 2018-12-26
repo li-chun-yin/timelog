@@ -18,7 +18,11 @@ class Client(object):
     
     def findByUser(self, user_id):
         #通过用户id查询该用户管理的日志标签数据
-        return self._collection.find({'user_id' : user_id})
+        return self._collection.find({'user_id' : user_id, 'is_delete' : False})
+    
+    def findById(self, tag_id):
+        #通过d查询特定的日志标签数据
+        return self._collection.find_one({'_id' : tag_id })
     
     def validate(self, user_tag):
         if len( user_tag['name'] ) == 0:
@@ -38,7 +42,8 @@ class Client(object):
         user_tag                = {
             'user_id'           : data['user_id'],
             'name'              : data['name'],
-            'color'             : data['color']
+            'color'             : data['color'],
+            'is_delete'         : data['is_delete'] if data['is_delete'] else False 
         }
         
         if '_id' in data:

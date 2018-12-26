@@ -33,6 +33,6 @@ def IfNotLoginThenRedirectToHome(func):
     '''
     def wrapper(*agrs, **kw):
         if not isLogin():
-            redirect(url_for('login'))
+            return redirect(url_for('login'))
         return func(*agrs, **kw)
     return wrapper
