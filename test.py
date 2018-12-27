@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-ac = [{'a':1,'b':2}, {'a':10, 'b':20}]
+# from lib.jinja_extensions import datetime_format
 
-for i in ac:
-    print(i['a']) 
+import time
+from lib.datetime import datetime_format
+t = time.strptime('2018年03月08日 00:00:29','%Y年%m月%d日 %H:%M:%S')
+tt = time.mktime(t)
+print(datetime_format(tt, '%Y年%m月%d日 %H:%M:%S'))
+# print(datetime_format('1545876801', '%Y-%m-%d %H:%M:%S'))
+
+# ac = [{'a':1,'b':2}, {'a':10, 'b':20}]
+# 
+# for i in ac:
+#     print(i['a']) 
 
 # from model import Account
 # from random import randrange

@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
+from lib.datetime import datetime_format
 
 app = Flask(__name__)
 
 app.config.from_pyfile('config.py')
+app.jinja_env.filters['date']   = datetime_format
  
 @app.route('/', methods=['GET'])
 def home():

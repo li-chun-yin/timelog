@@ -34,7 +34,7 @@ class Client(object):
             'end_time'          : data['end_time'],
         }
         
-        if '_id' in data:
+        if '_id' in data and data['_id']:
             user_log['_id'] = data['_id']
             
         self._collection.save(user_log)

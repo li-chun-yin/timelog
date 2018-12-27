@@ -40,3 +40,4 @@ def addTag():
     except MessageException as e:
         # 响应值
         return json.dumps({'status': 'failed', 'message' : e.value})
+    

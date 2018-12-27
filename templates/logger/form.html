@@ -1,29 +1,84 @@
-{% extends '_layout/blank.html' %}
-{% block body %}
-  <div class="box box-info">
-    <div class="box-header with-border"><h3 class="box-title">我的日志事件</h3></div>
-    <div class="box-body">
-      <form role="form">
-        <div class="form-group">
-          <label>事件标签
-            <select name="tag_id">
-              <option value="">请选择事件标签</option>
-              {% for tag in tag_options %}
-                <option value="{{ tag._id }}" style="background-color:{{ tag.color }}" {{ 'selected="selected"' if tag._id == user_log_item._id }}>{{ tag.name }}</option>
-              {% endfor %}
-            </select>
-          </label>
-        </div>
-        <div class="form-group">
-          <label>开始时间<input type="datetime" name="start_time" value="{{ user_log_item.start_time}}" /></label>
-        </div>
-        <div class="form-group">
-          <label>结束时间<input type="datetime" name="end_time" value="{{ user_log_item.start_time}}" /></label>
-        </div>
-        <div class="form-group">
-          <label><textarea name="content"> value="{{ user_log_item.content}}" </textarea></label>
-        </div>
-      </form>
-    </div>
-  </div>
+{% extends "_layout/default.html" %}
+
+{% block stylesheet %}
+	{{ super() }}
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.css') }}">
+{% endblock %}
+
+{% block body_content %}
+<div class="content-wrapper">
+	<section class="content">
+		<div class="row">
+			<div class="col-md-12">
+				<form role="form">
+					<input type="hidden" name="_id" value="{{ user_log_item._id }}" />	
+					<div class="box box-info">
+	            		<div class="box-header with-border"><h3 class="box-title">我的日志事件</h3></div>
+	            		<div class="box-body">
+	              			<div class="form-group">
+	                			<label>事件标签</label>        
+	                			<select name="tag_id" class="form-control">
+	                  				<option value="">请选择事件标签</option>
+	                  				<!-- {% for tag in tag_options %} -->
+	                    				<option value="{{ tag._id }}" style="background-color:{{ tag.color }}" {{ 'selected="selected"' if tag._id == user_log_item._id }}>{{ tag.name }}</option>
+	                  				<!-- {% endfor %} -->
+	                			</select>
+	              			</div>
+	              			<div class="form-group">
+	                			<label>时间范围</label>
+	               				<input type="text" name="user_log_time" class="form-control" 
+	               					value="{{ user_log_item.start_time|date('%Y年%m月%d日 %H:%M:%S') }}-{{ user_log_item.end_time|date('%Y年%m月%d日 %H:%M:%S') }}" 
+	               				/>
+							</div>
+							<div class="form-group">
+								<label>事件内容</label>
+	                			<textarea name="content" class="form-control">{{ user_log_item.content}}</textarea>
+	              			</div>
+	            		</div>
+	            		<div class="box-footer">
+	              			<button type="reset" class="btn btn-default">重置</button>
+	              			<button type="button" class="btn btn-primary pull-right" onclick="doSave()">保存</button>
+	            		</div>
+	          		</div>
+				</form>
+			</div>
+		</div>
+	</section>
+</div>
+{% endblock %}
+
+{% block bodyscript %}
+{{ super() }}
+<script src="{{ url_for('static', filename='moment/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script>
+//保存
+var doSave	= function(){
+	
+}
+
+jQuery(function(){
+	// timepicker init
+	jQuery('[name="user_log_time"]').daterangepicker({
+        timePicker: true, 
+        timePickerIncrement: 1, 
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        format: 'YYYY年MM月DD日 hh:mm:ss',
+		locale: {
+			"direction": "ltr",
+			"format": "YYYY年MM月DD日 HH:mm:ss",
+            "separator": "-",
+            "applyLabel": "确定",
+            "cancelLabel": "取消",
+            "fromLabel": "从",
+            "toLabel": "到",
+            "customRangeLabel": "自定义",
+			"daysOfWeek": ["日", "一", "二", "三", "四", "五", "六"],
+               "monthNames": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+               "firstDay": 0
+        },
+	});
+});
+</script>
 {% endblock %}

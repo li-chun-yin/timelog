@@ -43,7 +43,7 @@ class Client(object):
             'user_id'           : data['user_id'],
             'name'              : data['name'],
             'color'             : data['color'],
-            'is_delete'         : data['is_delete'] if data['is_delete'] else False 
+            'is_delete'         : data['is_delete'] if 'is_delete' in data else False 
         }
         
         if '_id' in data:
