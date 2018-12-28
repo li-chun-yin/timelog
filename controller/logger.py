@@ -56,34 +56,28 @@ def save():
         login_user      = login.getUser()
         _id             = request.form['_id']
         tag_id          = request.form['tag_id']
+        tag_name        = request.form['tag_name']
+        tag_color       = request.form['tag_color']
         user_log_time   = request.form['user_log_time'].split('-')
         content         = request.form['content']
         
-        utc             = UserTag.Client()
         ulc             = UserLog.Client()
-        
-        org_log_item    = None
-        user_tag_item   = None
-        if _id:
-            org_log_item    = ulc.findById(_id)
-        if tag_id not in org_log_item or tag_id != org_log_item['tag_id']:
-            user_tag_item   = utc.findById(tag_id)
 
         user_log_item           = {
             '_id'               : _id,
             'user_id'           : login_user['_id'],
-            'tag_id'            : user_tag_item['_id'] if '_id' in user_tag_item else org_log_item['tag_id'],
-            'tag_name'          : user_tag_item['name'] if 'name' in user_tag_item else org_log_item['tag_name'],
-            'tag_color'         : user_tag_item['color'] if 'color' in user_tag_item else org_log_item['tag_color'],
+            'tag_id'            : tag_id,
+            'tag_name'          : tag_name,
+            'tag_color'         : tag_color,
             'content'           : content,
             'start_time'        : unixtime(user_log_time[0], '%Y年%m月%d日 %H:%M:%S'),
             'end_time'          : unixtime(user_log_time[1], '%Y年%m月%d日 %H:%M:%S'),
         }
         
-        utc.save(user_log_item)
+        user_log_item           = ulc.save(user_log_item)
         
         # 响应值
-        return json.dumps({'status': 'success', 'message' : 'success'})
+        return json.dumps({'status': 'success', 'message' : 'success', '_id': str(user_log_item['_id']) })
     except MessageException as e:
         # 响应值
         return json.dumps({'status': 'failed', 'message' : e.value})

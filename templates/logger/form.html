@@ -16,13 +16,24 @@
 	            		<div class="box-header with-border"><h3 class="box-title">我的日志事件</h3></div>
 	            		<div class="box-body">
 	              			<div class="form-group">
-	                			<label>事件标签</label>        
-	                			<select name="tag_id" class="form-control">
-	                  				<option value="">请选择事件标签</option>
-	                  				<!-- {% for tag in tag_options %} -->
-	                    				<option value="{{ tag._id }}" style="background-color:{{ tag.color }}" {{ 'selected="selected"' if tag._id == user_log_item._id }}>{{ tag.name }}</option>
-	                  				<!-- {% endfor %} -->
-	                			</select>
+	                			<label>事件标签<a class="btn btn-link btn-sm" onclick="doOpenTagModal()">选择标签</a></label>
+	                			<div id="user-log-item-tag">
+	                				{% if user_log_item.tag_id %} 
+			                			<div class="form-control external-event bg-{{ user_log_item.tag_color }}">
+			                				{{ user_log_item.tag_name }}
+			                				<input type="hidden" name="tag_id" value="{{ user_log_item.tag_id }}" />
+			                				<input type="hidden" name="tag_name" value="{{ user_log_item.tag_name }}" />
+			                				<input type="hidden" name="tag_color" value="{{ user_log_item.tag_color }}" />
+			                			</div>
+			                		{% else %}
+			                			<div class="form-control" onclick="doOpenTagModal()">
+			                				{{ user_log_item.tag_name }}
+			                				<input type="hidden" name="tag_id" value="" />
+			                				<input type="hidden" name="tag_name" value="" />
+			                				<input type="hidden" name="tag_color" value="" />
+			                			</div>
+		                			{% endif %}
+	                			</div> 
 	              			</div>
 	              			<div class="form-group">
 	                			<label>时间范围</label>
@@ -37,7 +48,7 @@
 	            		</div>
 	            		<div class="box-footer">
 	              			<button type="reset" class="btn btn-default">重置</button>
-	              			<button type="button" class="btn btn-primary pull-right" onclick="doSave()">保存</button>
+	              			<button type="button" class="btn btn-primary pull-right" onclick="doSave(this)">保存</button>
 	            		</div>
 	          		</div>
 				</form>
@@ -53,8 +64,75 @@
 <script src="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.js') }}"></script>
 <script>
 //保存
-var doSave	= function(){
-	
+var doSave	= function(ev){
+	jQuery.post("{{ url_for('logger_save') }}", jQuery(ev).closest('form').serialize(), function(json){
+		if(checkAjaxResponse(json)){
+			alert('操作成功');
+			jQuery(ev).closest('form').find('[name="_id"]').val(json._id);
+		}
+	}, 'json');
+}
+
+// 打开标签选择窗口
+var doOpenTagModal	= function(){
+	if(jQuery('#tag-modal').length > 0){
+		jQuery('#tag-modal').modal();
+		return;
+	}
+
+	jQuery('body').append(
+		'<div id="tag-modal" class="modal">'
+			+ '<div class="modal-dialog">'
+				+ '<div class="modal-content">'
+					+ '<div class="modal-body"></div>'
+					+ '<div class="modal-footer">'
+						+ '<button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>'
+					+ '</div>'
+				+ '</div>'
+			+ '</div>'
+		+ '</div>'
+	);
+	jQuery('#tag-modal').modal();
+
+	function loadTag(){
+		jQuery('#tag-modal').find('.modal-body').load("{{ url_for('calendar_tag') }}", function(){
+			//Color chooser button
+			jQuery('#color-chooser > li > a').click(function(e){
+		        e.preventDefault()
+		        var currColor = jQuery(this).data('color')
+		        var orgcolor  = jQuery('#add-new-event').data('color'); 
+		        jQuery('#add-new-event').removeClass('bg-' + orgcolor);
+		        jQuery('#add-new-event').addClass('bg-' + currColor);
+		        jQuery('#add-new-event').data('color', currColor);
+		    })
+		    jQuery('#external-events').find('.external-event').click(function(){
+			    var color	= jQuery(this).data('color');
+			    var name	= jQuery(this).data('name');
+			    var tag_id	= jQuery(this).data('id');
+			    jQuery('#user-log-item-tag').empty().append(
+					'<div class="form-control external-event bg-' + color + '">'
+						+ name +
+						'<input type="hidden" name="tag_id" value="' + tag_id + '" />' +
+						'<input type="hidden" name="tag_name" value="' + name + '" />' +
+						'<input type="hidden" name="tag_color" value="' + color + '" />' +
+					'</div>'
+				);
+			    jQuery('#tag-modal').modal('hide');
+			});
+			jQuery('#add-new-event').click(function(){
+		    	var post_data = {
+		        	tag_name    : jQuery('#new-event').val(),
+		        	tag_color   : jQuery(this).data('color')
+		        };
+		        jQuery.post("{{ url_for('calendar_tag_add') }}", post_data, function(json){
+		        	if(checkAjaxResponse(json)){
+		        		loadTag();
+		        	}
+		        }, 'json');
+			});
+		});
+	}
+	loadTag();
 }
 
 jQuery(function(){

@@ -1,37 +1,37 @@
 <div class="box box-solid">
-  <div class="box-header with-border">
-    <h4 class="box-title">事件标签</h4>
-  </div>
-  <div class="box-body">
-    <div id="external-events">
-      {% for user_tag in user_tags %}
-        <div class="external-event bg-{{ user_tag.color }}">{{ user_tag.name }}</div>				
-      {% else %}
+	<div class="box-header with-border">
+		<h4 class="box-title">事件标签</h4>
+	</div>
+	<div class="box-body">
+		<div id="external-events">
+			{% for user_tag in user_tags %}
+				<div class="external-event bg-{{ user_tag.color }}" data-id="{{ user_tag._id }}" data-name="{{ user_tag.name }}" data-color="{{ user_tag.color }}">
+					{{ user_tag.name }}
+				</div>				
+			{% else %}
 				<div id="external-events-empty">尚未添加任何标签</div>
 			{% endfor %}
 		</div>
-  </div>
+	</div>
 </div>
 <!-- /. box -->
 
 <div class="box box-solid">
-  <div class="box-header with-border">
-    <h3 class="box-title">添加新标签</h3>
-  </div>
-  <div class="box-body">
-    <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-      <!--<button type="button" id="color-chooser-btn" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>-->
-      <ul class="fc-color-picker" id="color-chooser">
-        {% for color in tag_clors %}
-          <li><a class="text-{{ color }}" data-color="{{ color }}" href="#"><i class="fa fa-square"></i></a></li>
-        {% endfor %}    
-      </ul>
-    </div><!-- /btn-group -->
-    <div class="input-group">
-      <input id="new-event" type="text" class="form-control" placeholder="Event Title">
-      <div class="input-group-btn">
-        <button id="add-new-event" type="button" class="btn btn-flat bg-{{ tag_clors[0] }}" data-color="{{ tag_clors[0] }}">Add</button>
-      </div><!-- /btn-group -->
-    </div><!-- /input-group -->
-  </div>
+	<div class="box-header with-border"><h3 class="box-title">添加新标签</h3></div>
+	<div class="box-body">
+		<div class="btn-group" style="width: 100%; margin-bottom: 10px;">
+			<!--<button type="button" id="color-chooser-btn" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>-->
+			<ul class="fc-color-picker" id="color-chooser">
+				<!-- {% for color in tag_clors %} -->
+					<li><a class="text-{{ color }}" data-color="{{ color }}" href="#"><i class="fa fa-square"></i></a></li>
+				<!-- {% endfor %} -->    
+			</ul>
+		</div><!-- /btn-group -->
+		<div class="input-group">
+			<input id="new-event" type="text" class="form-control" placeholder="Event Title">
+			<div class="input-group-btn">
+				<button id="add-new-event" type="button" class="btn btn-flat bg-{{ tag_clors[0] }}" data-color="{{ tag_clors[0] }}">Add</button>
+			</div><!-- /btn-group -->
+		</div><!-- /input-group -->
+	</div>
 </div>

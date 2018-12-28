@@ -2,6 +2,7 @@
 
 from pymongo import MongoClient
 from flask import current_app
+from excepts.MessageException import MessageException
 
 class Client(object):
     # 用于处理用户日志数据信息的mongodb操作类
@@ -16,7 +17,19 @@ class Client(object):
     def findById(self, user_log_id):
         #通过id查询用户的日志
         return self._collection.find_one({'_id' : user_log_id })
-           
+
+    def validate(self, user_log):
+        if len( user_log['tag_id'] ) == 0:
+            raise MessageException('请选择事件标签。')
+        if len( user_log['tag_name'] ) == 0:
+            raise MessageException('请选择事件标签。')
+        if len( user_log['tag_color'] ) == 0:
+            raise MessageException('请选择事件标签。')
+        if user_log['start_time'] == 0:
+            raise MessageException('请选择事件发生时间。')
+        if user_log['end_time'] == 0:
+            raise MessageException('请选择事件结束时间。')
+
     def save(self, data):
         # 修改用户日志的数据信息
         '''
@@ -24,6 +37,8 @@ class Client(object):
         当data[_id]没有设置的时候会添加新数据
         当data[_id]设置的时候会修改数据
         '''
+        self.validate(data)
+        
         user_log                = {
             'user_id'           : data['user_id'],
             'tag_id'            : data['tag_id'],
