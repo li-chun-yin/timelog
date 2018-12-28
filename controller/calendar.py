@@ -2,10 +2,12 @@
 
 from flask import render_template
 from lib import login
-from model import UserTag
+from model import UserTag, UserLog
 from flask.globals import request
 from excepts.MessageException import MessageException
 import json
+from lib.datetime import datetime_format, unixtime
+from flask.helpers import url_for
 
 @login.IfNotLoginThenRedirectToHome
 def index():
@@ -41,3 +43,22 @@ def addTag():
         # 响应值
         return json.dumps({'status': 'failed', 'message' : e.value})
     
+@login.IfNotLoginThenRedirectToHome
+def events():
+    events          = []
+    login_user      = login.getUser()
+    start_ymd       = request.args.get('start')
+    end_ymd         = request.args.get('end')    
+    ulc             = UserLog.Client()
+    user_log_items  = ulc.findUserLogByYmd(login_user['_id'], start_ymd, end_ymd)
+    for log in user_log_items:
+        events.append({
+            'title'             : log['tag_name'],
+            'start'             : datetime_format(log['start_time'], '%Y-%m-%d %H:%M:%S'),
+            'end'               : datetime_format(log['end_time'], '%Y-%m-%d %H:%M:%S'),
+            'backgroundColor'   : log['tag_color'],
+            'borderColor'       : log['tag_color'],
+            'url'               : url_for('logger_form', user_log_id = str(log['_id']))
+        })
+    
+    return json.dumps(events);

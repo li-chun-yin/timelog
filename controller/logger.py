@@ -35,7 +35,7 @@ def form(user_log_id=None):
         'end_time'          : int(time.time()),
     }
     if user_log_id:
-        user_log_item       = ulc.findById(user_log_id)            
+        user_log_item       = ulc.findById(user_log_id)
     user_tag_item   = None
     if user_tag_id:
         user_tag_item       = utc.findById(user_tag_id)
@@ -44,8 +44,8 @@ def form(user_log_id=None):
         user_log_item['tag_name']   = user_tag_item['name']
         user_log_item['tag_color']  = user_tag_item['color']
     
-    if user_log_item['user_id'] != login_user['_id']:
-        raise SystemException('非法操作')
+#     if str(user_log_item['user_id']) != str(login_user['_id']):
+#         raise SystemException('非法操作')
         
     #template
     return render_template('logger/form.html', user_log_item = user_log_item, tag_options = tag_options)

@@ -44,6 +44,11 @@ def calendar_tag_add():
     from controller import calendar
     return calendar.addTag()
 
+@app.route('/calendar-events', methods=['GET'])
+def calendar_events():
+    from controller import calendar
+    return calendar.events()
+
 @app.route('/logger-form', methods=['GET'])
 @app.route('/logger-form/<user_log_id>', methods=['GET'])
 def logger_form(user_log_id=None):

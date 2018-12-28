@@ -3,6 +3,8 @@
 from pymongo import MongoClient
 from flask import current_app
 from excepts.MessageException import MessageException
+from lib.datetime import unixtime
+from bson.objectid import ObjectId
 
 class Client(object):
     # 用于处理用户日志数据信息的mongodb操作类
@@ -16,7 +18,15 @@ class Client(object):
         
     def findById(self, user_log_id):
         #通过id查询用户的日志
-        return self._collection.find_one({'_id' : user_log_id })
+        return self._collection.find_one(ObjectId(user_log_id))
+
+    def findUserLogByYmd(self, user_id, start_ymd, end_ymd):
+        #通过日期范围查询用户的日志数据
+        return self._collection.find({
+            'user_id'       : user_id,
+            'start_time'    : { "$gte" : unixtime(start_ymd + ' 00:00:00', '%Y-%m-%d %H:%M:%S') },
+            'end_time'      : { "$lte" : unixtime(end_ymd + ' 23:59:60', '%Y-%m-%d %H:%M:%S') }
+        })
 
     def validate(self, user_log):
         if len( user_log['tag_id'] ) == 0:
@@ -50,7 +60,7 @@ class Client(object):
         }
         
         if '_id' in data and data['_id']:
-            user_log['_id'] = data['_id']
+            user_log['_id'] = ObjectId(data['_id'])
             
         self._collection.save(user_log)
         

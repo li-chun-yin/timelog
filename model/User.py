@@ -3,6 +3,7 @@
 from pymongo import MongoClient
 from flask import current_app
 import hashlib
+from bson.objectid import ObjectId
 
 class Client(object):
     # 用于处理用户数据信息的mongodb操作类
@@ -56,7 +57,7 @@ class Client(object):
             })
         
         if '_id' in data:
-            user['_id'] = data['_id']
+            user['_id'] = ObjectId(data['_id'])
             
         self._collection.save(user)
         

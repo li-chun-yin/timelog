@@ -5,6 +5,7 @@ from flask import current_app
 from lib import tag
 from excepts.MessageException import MessageException
 from excepts.SystemException import SystemException
+from bson.objectid import ObjectId
 
 class Client(object):
     # 用于处理用户标签数据信息的mongodb操作类
@@ -47,7 +48,7 @@ class Client(object):
         }
         
         if '_id' in data:
-            user_tag['_id'] = user_tag['_id']
+            user_tag['_id'] = ObjectId(user_tag['_id'])
             
         self._collection.save(user_tag)
         
