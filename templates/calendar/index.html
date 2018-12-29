@@ -113,30 +113,69 @@ jQuery(function () {
         	week : '周',
         	day  : '日'
 		},
+		eventLimit		: true,
+		allDaySlot		: false,
 		dayNames		: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
 		dayNamesShort	: ["日", "一", "二", "三", "四", "五", "六"],
         monthNames		: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
         monthNamesShort	: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
 		events			: { url: "{{ url_for('calendar_events') }}" },
-		editable		: true,
+		editable		: false,
 		droppable		: true, // this allows things to be dropped onto the calendar !!!
-		drop			: function (date, allDay) { // this function is called when something is dropped
+		drop			: function (date, allDay, ui, resourceId) { // this function is called when something is dropped
+			var tag_id			= $(this).data('id');
+			var tag_name		= $(this).data('name');
+			var tag_color		= $(this).data('color');
+			var start_ymdhis	= '';
+			var end_ymdhis		= '';
 			
-	        // retrieve the dropped element's stored Event Object
-	        var originalEventObject = $(this).data('eventObject')
-	
-	        // we need to copy it, so that multiple events don't have a reference to the same object
-	        var copiedEventObject = $.extend({}, originalEventObject)
-	
-	        // assign it the date that was reported
-	        copiedEventObject.start           = date
-	        copiedEventObject.allDay          = allDay
-	        copiedEventObject.backgroundColor = $(this).css('background-color')
-	        copiedEventObject.borderColor     = $(this).css('border-color')
-	
-	        // render the event on the calendar
-	        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-	        $('#calendar').fullCalendar('renderEvent', copiedEventObject, true)
+			var start_time		= date._i;
+			if(jQuery.isNumeric(start_time)){
+				var date		= new Date(start_time);
+				var y			= date.getFullYear();
+				var m			= date.getMonth() >= 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1);
+				var d			= date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
+				start_ymdhis	= y + '-' + m + '-' + d + ' 00:00:00';
+				end_ymdhis		= y + '-' + m + '-' + d + ' 23:59:59';
+				start_log_ymdhis= y + '年' + m + '月' + d + '日 00:00:00';
+				end_log_ymdhis	= y + '年' + m + '月' + d + '日 23:59:59';
+			}else{
+				var y			= start_time[0];
+				var m			= start_time[1] >= 9 ? start_time[1] + 1 : '0' + (start_time[1] + 1);
+				var d			= start_time[2] > 9 ? start_time[2] : '0' + start_time[2];
+				var h			= start_time[3] > 9 ? start_time[3] : '0' + start_time[3];
+				var i			= start_time[4] > 9 ? start_time[4] : '0' + start_time[4];
+				var s			= start_time[5] > 9 ? start_time[5] : '0' + start_time[5];
+				var eh			= start_time[3] >= 9 ? start_time[3] + 1 : '0' + (start_time[3] + 1);
+				start_ymdhis	= y + '-' + m + '-' + d + ' ' + h + ':' + i + ':' + s;
+				end_ymdhis		= y + '-' + m + '-' + d + ' ' + eh + ':' + i + ':' + s;				
+				start_log_ymdhis= y + '年' + m + '月' + d + '日 ' + h + ':' + i + ':' + s;
+				end_log_ymdhis	= y + '年' + m + '月' + d + '日 ' + eh + ':' + i + ':' + s;	
+			}
+
+			var post_data	= {
+				_id				: '',
+				tag_id			: tag_id,
+				tag_name		: tag_name,
+				tag_color		: tag_color,
+				user_log_time	: start_log_ymdhis + '-' + end_log_ymdhis,
+				content			: ''
+			};
+			jQuery.post("{{ url_for('logger_save') }}", post_data, function(json){
+				if(checkAjaxResponse(json)){
+			        // assign it the date that was reported
+			        eventObject					= {};
+			        eventObject.title			= tag_name;
+			        eventObject.start           = moment(start_ymdhis);
+			        eventObject.end			  	= moment(end_ymdhis);
+			        eventObject.backgroundColor = tag_color;
+			        eventObject.borderColor     = tag_color;
+			        eventObject.url				= "{{ url_for('logger_form') }}" + '/' + json._id;
+			        // render the event on the calendar
+			        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+			        jQuery('#calendar').fullCalendar('renderEvent', eventObject, true);
+				}				
+			}, 'json');
 		}
 	});
 });
