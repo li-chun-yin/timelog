@@ -39,7 +39,11 @@ class Client(object):
             raise MessageException('请选择事件发生时间。')
         if user_log['end_time'] == 0:
             raise MessageException('请选择事件结束时间。')
-
+    
+    def remove(self, user_log_id):
+        #删除用户日志
+        return self._collection.delete_one({'_id': ObjectId(user_log_id) })
+    
     def save(self, data):
         # 修改用户日志的数据信息
         '''

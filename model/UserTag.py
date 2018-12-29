@@ -23,14 +23,14 @@ class Client(object):
     
     def findById(self, tag_id):
         #通过d查询特定的日志标签数据
-        return self._collection.find_one({'_id' : tag_id })
+        return self._collection.find_one({'_id' : ObjectId(tag_id) })
     
     def validate(self, user_tag):
         if len( user_tag['name'] ) == 0:
             raise MessageException('事件标签名字不能为空。')
         if user_tag['color'] not in tag.colors():
-            raise SystemException('事件标签配置异常。')
-        
+            raise SystemException('事件标签配置异常。')        
+    
     def save(self, data):
         # 修改用户标签的数据信息
         '''
@@ -47,8 +47,8 @@ class Client(object):
             'is_delete'         : data['is_delete'] if 'is_delete' in data else False 
         }
         
-        if '_id' in data:
-            user_tag['_id'] = ObjectId(user_tag['_id'])
+        if '_id' in data and data['_id']:
+            user_tag['_id'] = ObjectId(data['_id'])
             
         self._collection.save(user_tag)
         

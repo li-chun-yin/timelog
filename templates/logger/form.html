@@ -47,7 +47,7 @@
 	              			</div>
 	            		</div>
 	            		<div class="box-footer">
-	              			<button type="reset" class="btn btn-default">重置</button>
+	              			<button type="button" class="btn btn-default" onclick="doRemove(this)">删除</button>
 	              			<button type="button" class="btn btn-primary pull-right" onclick="doSave(this)">保存</button>
 	            		</div>
 	          		</div>
@@ -63,6 +63,16 @@
 <script src="{{ url_for('static', filename='moment/moment.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.js') }}"></script>
 <script>
+//删除
+var doRemove	= function(ev){
+	jQuery.post("{{ url_for('logger_remove') }}", jQuery(ev).closest('form').serialize(), function(json){
+		if(checkAjaxResponse(json)){
+			alert('删除成功')
+			location.href	= "{{ url_for('logger_form') }}";
+		}
+	}, 'json');
+}
+
 //保存
 var doSave	= function(ev){
 	jQuery.post("{{ url_for('logger_save') }}", jQuery(ev).closest('form').serialize(), function(json){

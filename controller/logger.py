@@ -44,11 +44,34 @@ def form(user_log_id=None):
         user_log_item['tag_name']   = user_tag_item['name']
         user_log_item['tag_color']  = user_tag_item['color']
     
-#     if str(user_log_item['user_id']) != str(login_user['_id']):
-#         raise SystemException('非法操作')
+    if str(user_log_item['user_id']) != str(login_user['_id']):
+        raise SystemException('非法操作')
         
     #template
     return render_template('logger/form.html', user_log_item = user_log_item, tag_options = tag_options)
+
+@login.IfNotLoginThenRedirectToHome
+def remove():
+    try:        
+        login_user      = login.getUser()
+        _id             = request.form['_id']
+        
+        ulc             = UserLog.Client()
+        
+        user_log_item   = ulc.findById(_id);
+        if str(user_log_item['user_id']) != str(login_user['_id']):
+            raise SystemException('非法操作')
+
+        ulc.remove(_id)
+        
+        # 响应值
+        return json.dumps({'status': 'success', 'message' : 'success', '_id': str(user_log_item['_id']) })
+    except MessageException as e:
+        # 响应值
+        return json.dumps({'status': 'failed', 'message' : e.value})
+    except SystemException as e:
+        # 响应值
+        return json.dumps({'status': 'failed', 'message' : '非法操作'})
 
 @login.IfNotLoginThenRedirectToHome
 def save():

@@ -7,6 +7,7 @@
 			{% for user_tag in user_tags %}
 				<div class="external-event bg-{{ user_tag.color }}" data-id="{{ user_tag._id }}" data-name="{{ user_tag.name }}" data-color="{{ user_tag.color }}">
 					{{ user_tag.name }}
+					<i class="fa fa-fw fa-times pull-right" onclick="doDeleteTag(this)"></i>
 				</div>				
 			{% else %}
 				<div id="external-events-empty">尚未添加任何标签</div>

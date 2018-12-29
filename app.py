@@ -44,6 +44,11 @@ def calendar_tag_add():
     from controller import calendar
     return calendar.addTag()
 
+@app.route('/calendar-tag-remove/<user_tag_id>', methods=['POST'])
+def calendar_tag_remove(user_tag_id):
+    from controller import calendar
+    return calendar.removeTag(user_tag_id)
+
 @app.route('/calendar-events', methods=['GET'])
 def calendar_events():
     from controller import calendar
@@ -54,6 +59,11 @@ def calendar_events():
 def logger_form(user_log_id=None):
     from controller import logger
     return logger.form(user_log_id)
+
+@app.route('/logger-remove', methods=['POST'])
+def logger_remove():
+    from controller import logger
+    return logger.remove()
 
 @app.route('/logger-save', methods=['POST'])
 def logger_save():

@@ -46,6 +46,17 @@
 
 <!-- Page specific script -->
 <script>
+var doDeleteTag	= function(ev){
+	if(confirm('你确定要删除标签吗?')){
+		var tag_id	= jQuery(ev).closest('.external-event').data('id')
+		jQuery.post("{{ url_for('calendar_tag_remove', user_tag_id='') }}" + tag_id, function(json){
+			if(checkAjaxResponse(json)){
+				init_events_container();
+			}
+		}, 'json');
+	}
+}
+
 var init_events_container = function(){
 	jQuery('#external-events-container').load("{{ url_for('calendar_tag') }}", function(){
 		/* initialize the external events

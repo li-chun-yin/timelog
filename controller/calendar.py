@@ -8,6 +8,7 @@ from excepts.MessageException import MessageException
 import json
 from lib.datetime import datetime_format, unixtime
 from flask.helpers import url_for
+from excepts.SystemException import SystemException
 
 @login.IfNotLoginThenRedirectToHome
 def index():
@@ -42,6 +43,26 @@ def addTag():
     except MessageException as e:
         # 响应值
         return json.dumps({'status': 'failed', 'message' : e.value})
+
+
+@login.IfNotLoginThenRedirectToHome
+def removeTag(user_tag_id):
+    try:
+        login_user                  = login.getUser()
+        utc                         = UserTag.Client()
+        user_tag_item               = utc.findById(user_tag_id);
+        
+        if str(user_tag_item['user_id']) != str(login_user['_id']):
+            raise SystemException('非法操作')
+
+        user_tag_item['is_delete']  = True
+        utc.save(user_tag_item)
+        
+        return json.dumps({'status': 'success', 'message' : 'success'})
+    except MessageException as e:
+        return json.dumps({'status': 'failed', 'message' : e.value})
+    except SystemException as e:
+        return json.dumps({'status': 'failed', 'message' : '非法操作'})
     
 @login.IfNotLoginThenRedirectToHome
 def events():
