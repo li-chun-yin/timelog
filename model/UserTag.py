@@ -28,8 +28,6 @@ class Client(object):
     def validate(self, user_tag):
         if len( user_tag['name'] ) == 0:
             raise MessageException('事件标签名字不能为空。')
-        if user_tag['color'] not in tag.colors():
-            raise SystemException('事件标签配置异常。')        
     
     def save(self, data):
         # 修改用户标签的数据信息

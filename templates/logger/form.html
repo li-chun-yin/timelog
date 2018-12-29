@@ -3,6 +3,7 @@
 {% block stylesheet %}
 	{{ super() }}
 	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
 {% endblock %}
 
 {% block body_content %}
@@ -19,7 +20,7 @@
 	                			<label>事件标签<a class="btn btn-link btn-sm" onclick="doOpenTagModal()">选择标签</a></label>
 	                			<div id="user-log-item-tag">
 	                				{% if user_log_item.tag_id %} 
-			                			<div class="form-control external-event bg-{{ user_log_item.tag_color }}">
+			                			<div class="form-control external-event" style="background-color: {{ user_log_item.tag_color }}">
 			                				{{ user_log_item.tag_name }}
 			                				<input type="hidden" name="tag_id" value="{{ user_log_item.tag_id }}" />
 			                				<input type="hidden" name="tag_name" value="{{ user_log_item.tag_name }}" />
@@ -62,6 +63,7 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='moment/moment.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') }}"></script>
 <script>
 //删除 标签
 var doDeleteTag	= function(ev){
@@ -117,9 +119,7 @@ var loadTag = function (){
 		jQuery('#color-chooser > li > a').click(function(e){
 	        e.preventDefault()
 	        var currColor = jQuery(this).data('color')
-	        var orgcolor  = jQuery('#add-new-event').data('color'); 
-	        jQuery('#add-new-event').removeClass('bg-' + orgcolor);
-	        jQuery('#add-new-event').addClass('bg-' + currColor);
+	        jQuery('#add-new-event').css('background-color', currColor);
 	        jQuery('#add-new-event').data('color', currColor);
 	    })
 	    jQuery('#external-events').find('.external-event').click(function(){
@@ -127,7 +127,7 @@ var loadTag = function (){
 		    var name	= jQuery(this).data('name');
 		    var tag_id	= jQuery(this).data('id');
 		    jQuery('#user-log-item-tag').empty().append(
-				'<div class="form-control external-event bg-' + color + '">'
+				'<div class="form-control external-event" style="background-color: ' + color + '">'
 					+ name +
 					'<input type="hidden" name="tag_id" value="' + tag_id + '" />' +
 					'<input type="hidden" name="tag_name" value="' + name + '" />' +
@@ -135,6 +135,14 @@ var loadTag = function (){
 				'</div>'
 			);
 		    jQuery('#tag-modal').modal('hide');
+		});
+
+		//Colorpicker
+	    jQuery('.colorpicker-element').colorpicker();
+	    jQuery('.colorpicker-element').find(':text').change(function(){
+	        var currColor = jQuery(this).val()
+	        jQuery('#add-new-event').css('background-color', currColor);
+	        jQuery('#add-new-event').data('color', currColor);
 		});
 		
 		jQuery('#external-events').find('.external-event').find('.fa-times').click(function(e){

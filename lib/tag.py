@@ -2,4 +2,4 @@
 
 def colors():
     # 用户事件标签的颜色
-    return ('aqua','blue', 'light-blue', 'teal', 'yellow', 'orange', 'green', 'lime', 'red', 'purple', 'fuchsia', 'muted', 'navy')
+    return ('aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'yellow')
