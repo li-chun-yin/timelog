@@ -63,6 +63,11 @@
 <script src="{{ url_for('static', filename='moment/moment.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.js') }}"></script>
 <script>
+//删除 标签
+var doDeleteTag	= function(ev){
+	// 事件被使用jQuery绑定了。目的时不要触发外面div的click事件
+}
+
 //删除
 var doRemove	= function(ev){
 	jQuery.post("{{ url_for('logger_remove') }}", jQuery(ev).closest('form').serialize(), function(json){
@@ -103,46 +108,59 @@ var doOpenTagModal	= function(){
 		+ '</div>'
 	);
 	jQuery('#tag-modal').modal();
-
-	function loadTag(){
-		jQuery('#tag-modal').find('.modal-body').load("{{ url_for('calendar_tag') }}", function(){
-			//Color chooser button
-			jQuery('#color-chooser > li > a').click(function(e){
-		        e.preventDefault()
-		        var currColor = jQuery(this).data('color')
-		        var orgcolor  = jQuery('#add-new-event').data('color'); 
-		        jQuery('#add-new-event').removeClass('bg-' + orgcolor);
-		        jQuery('#add-new-event').addClass('bg-' + currColor);
-		        jQuery('#add-new-event').data('color', currColor);
-		    })
-		    jQuery('#external-events').find('.external-event').click(function(){
-			    var color	= jQuery(this).data('color');
-			    var name	= jQuery(this).data('name');
-			    var tag_id	= jQuery(this).data('id');
-			    jQuery('#user-log-item-tag').empty().append(
-					'<div class="form-control external-event bg-' + color + '">'
-						+ name +
-						'<input type="hidden" name="tag_id" value="' + tag_id + '" />' +
-						'<input type="hidden" name="tag_name" value="' + name + '" />' +
-						'<input type="hidden" name="tag_color" value="' + color + '" />' +
-					'</div>'
-				);
-			    jQuery('#tag-modal').modal('hide');
-			});
-			jQuery('#add-new-event').click(function(){
-		    	var post_data = {
-		        	tag_name    : jQuery('#new-event').val(),
-		        	tag_color   : jQuery(this).data('color')
-		        };
-		        jQuery.post("{{ url_for('calendar_tag_add') }}", post_data, function(json){
-		        	if(checkAjaxResponse(json)){
-		        		loadTag();
-		        	}
-		        }, 'json');
-			});
-		});
-	}
+	
 	loadTag();
+}
+var loadTag = function (){
+	jQuery('#tag-modal').find('.modal-body').load("{{ url_for('calendar_tag') }}", function(){
+		//Color chooser button
+		jQuery('#color-chooser > li > a').click(function(e){
+	        e.preventDefault()
+	        var currColor = jQuery(this).data('color')
+	        var orgcolor  = jQuery('#add-new-event').data('color'); 
+	        jQuery('#add-new-event').removeClass('bg-' + orgcolor);
+	        jQuery('#add-new-event').addClass('bg-' + currColor);
+	        jQuery('#add-new-event').data('color', currColor);
+	    })
+	    jQuery('#external-events').find('.external-event').click(function(){
+		    var color	= jQuery(this).data('color');
+		    var name	= jQuery(this).data('name');
+		    var tag_id	= jQuery(this).data('id');
+		    jQuery('#user-log-item-tag').empty().append(
+				'<div class="form-control external-event bg-' + color + '">'
+					+ name +
+					'<input type="hidden" name="tag_id" value="' + tag_id + '" />' +
+					'<input type="hidden" name="tag_name" value="' + name + '" />' +
+					'<input type="hidden" name="tag_color" value="' + color + '" />' +
+				'</div>'
+			);
+		    jQuery('#tag-modal').modal('hide');
+		});
+		
+		jQuery('#external-events').find('.external-event').find('.fa-times').click(function(e){
+			e.stopPropagation();
+			if(confirm('你确定要删除标签吗?')){
+				var tag_id	= jQuery(this).closest('.external-event').data('id')
+				jQuery.post("{{ url_for('calendar_tag_remove', user_tag_id='') }}" + tag_id, function(json){
+					if(checkAjaxResponse(json)){
+						loadTag();
+					}
+				}, 'json');
+			}
+		});
+		
+		jQuery('#add-new-event').click(function(){
+	    	var post_data = {
+	        	tag_name    : jQuery('#new-event').val(),
+	        	tag_color   : jQuery(this).data('color')
+	        };
+	        jQuery.post("{{ url_for('calendar_tag_add') }}", post_data, function(json){
+	        	if(checkAjaxResponse(json)){
+	        		loadTag();
+	        	}
+	        }, 'json');
+		});
+	});
 }
 
 jQuery(function(){

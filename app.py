@@ -19,6 +19,11 @@ def login():
     from controller import login 
     return login.form()
 
+@app.route('/logout')
+def logout():
+    from controller import login 
+    return login.logout()
+
 @app.route('/login-email', methods=['POST'])
 def login_email():
     from controller import login 

@@ -9,10 +9,18 @@ import smtplib
 import re
 import json
 from lib import login
+from flask.helpers import url_for
+from werkzeug.utils import redirect
+from lib import login
 
 def form():
 # 登录表单页面
     return render_template('login/form.html')
+
+def logout():
+# 注销登录
+    login.logout()
+    return redirect(url_for('home'))
 
 def email():
 # 在登录表单输入email后，发送email登录校验的邮件
