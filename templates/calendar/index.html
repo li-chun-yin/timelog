@@ -116,7 +116,17 @@ var init_events_container = function(){
 		});
 	});  
 }
-  
+
+var doUpdateEventTime	= function(log_id, start_ymdhis, end_ymdhis){
+	jQuery.post("{{ url_for('logger_change_time') }}", {
+		_id				: log_id,
+		start_ymdhis	: start_ymdhis,
+		end_ymdhis		: end_ymdhis
+	}, function(json){
+		checkAjaxResponse(json);
+	}, 'json')
+}
+
 jQuery(function () {
     init_events_container();
 
@@ -141,8 +151,20 @@ jQuery(function () {
         monthNames		: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
         monthNamesShort	: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
 		events			: { url: "{{ url_for('calendar_events') }}" },
-		editable		: false,
+		editable		: true,
 		droppable		: true, // this allows things to be dropped onto the calendar !!!
+		eventDrop		: function(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view){
+			var _id				= event._id;
+			var start_ymdhis	= event.start.format('YYYY-MM-DD HH:mm:ss');
+			var end_ymdhis		= event.end.format('YYYY-MM-DD HH:mm:ss');
+			doUpdateEventTime(_id, start_ymdhis, end_ymdhis);
+		},
+		eventResize		: function(event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view){
+			var _id				= event._id;
+			var start_ymdhis	= event.start.format('YYYY-MM-DD HH:mm:ss');
+			var end_ymdhis		= event.end.format('YYYY-MM-DD HH:mm:ss');
+			doUpdateEventTime(_id, start_ymdhis, end_ymdhis);
+		},
 		drop			: function (date, allDay, ui, resourceId) { // this function is called when something is dropped
 			var tag_id			= $(this).data('id');
 			var tag_name		= $(this).data('name');
@@ -186,6 +208,7 @@ jQuery(function () {
 				if(checkAjaxResponse(json)){
 			        // assign it the date that was reported
 			        eventObject					= {};
+			        eventObject._id				= json._id;
 			        eventObject.title			= tag_name;
 			        eventObject.start           = moment(start_ymdhis);
 			        eventObject.end			  	= moment(end_ymdhis);

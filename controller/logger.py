@@ -51,6 +51,30 @@ def form(user_log_id=None):
     return render_template('logger/form.html', user_log_item = user_log_item, tag_options = tag_options)
 
 @login.IfNotLoginThenRedirectToHome
+def changeTime():
+    try:
+        login_user                  = login.getUser()
+        _id                         = request.form['_id']
+        start_ymdhis                = request.form['start_ymdhis']
+        end_ymdhis                  = request.form['end_ymdhis']
+        
+        ulc                         = UserLog.Client()
+        user_log_item               = ulc.findById(_id);
+        
+        if str(user_log_item['user_id']) != str(login_user['_id']):
+            raise SystemException('非法操作')
+        
+        user_log_item['start_time'] = unixtime(start_ymdhis, '%Y-%m-%d %H:%M:%S')
+        user_log_item['end_time']   = unixtime(end_ymdhis, '%Y-%m-%d %H:%M:%S')
+        ulc.save(user_log_item)
+        
+        return json.dumps({'status': 'success', 'message' : 'success'})
+    except MessageException as e:
+        return json.dumps({'status': 'failed', 'message' : e.value})
+    except SystemException as e:
+        return json.dumps({'status': 'failed', 'message' : '非法操作'})
+
+@login.IfNotLoginThenRedirectToHome
 def remove():
     try:        
         login_user      = login.getUser()

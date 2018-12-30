@@ -79,6 +79,7 @@ def events():
             'end'               : datetime_format(log['end_time'], '%Y-%m-%d %H:%M:%S'),
             'backgroundColor'   : log['tag_color'],
             'borderColor'       : log['tag_color'],
+            '_id'               : str(log['_id']),
             'url'               : url_for('logger_form', user_log_id = str(log['_id']))
         })
     

@@ -65,6 +65,11 @@ def logger_form(user_log_id=None):
     from controller import logger
     return logger.form(user_log_id)
 
+@app.route('/logger-change-time', methods=['POST'])
+def logger_change_time():
+    from controller import logger
+    return logger.changeTime()
+
 @app.route('/logger-remove', methods=['POST'])
 def logger_remove():
     from controller import logger

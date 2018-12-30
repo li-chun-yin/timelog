@@ -66,6 +66,8 @@ class Client(object):
         if '_id' in data and data['_id']:
             user_log['_id'] = ObjectId(data['_id'])
             
+        print(user_log)
+        exit
         self._collection.save(user_log)
         
         return user_log
