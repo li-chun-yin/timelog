@@ -12,7 +12,7 @@ COPY . /app
 RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
 
 # Install any needed packages specified in requirements.txt
-RUN apt-get update && apt-get install -y build-essential python3-dev curl
+RUN apt-get update && apt-get install -y build-essential python3-dev curl nginx
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python3 get-pip.py
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
@@ -22,7 +22,10 @@ RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu trusty/mongodb-
 RUN apt-get update && apt-get install -yq libcurl3 mongodb-org
 RUN mkdir -p /data/db
 
-# Make port 80 available to the world outside this container
-EXPOSE 5000 27017
 
-ENTRYPOINT ["./app.py"]
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Make port 80 available to the world outside this container
+EXPOSE 80 27017
+
+ENTRYPOINT ["./entrypoint.sh"]

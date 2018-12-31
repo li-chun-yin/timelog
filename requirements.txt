@@ -1,4 +1,2 @@
 Flask
-Redis
 Pymongo
-Uwsgi
