@@ -4,6 +4,7 @@
 	{{ super() }}
 	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-star-rating/css/star-rating.min.css') }}">
 {% endblock %}
 
 {% block body_content %}
@@ -46,6 +47,10 @@
 								<label>事件内容</label>
 	                			<textarea name="content" class="form-control">{{ user_log_item.content}}</textarea>
 	              			</div>
+							<div class="form-group">
+								<label>满意度</label>
+	                			<input type="text" name="satisfy" id="user-log-satisfy" value="{{ user_log_item.satisfy / 2 }}" />
+	              			</div>
 	            		</div>
 	            		<div class="box-footer">
 	              			<button type="button" class="btn btn-default" onclick="doRemove(this)">删除</button>
@@ -64,6 +69,7 @@
 <script src="{{ url_for('static', filename='moment/moment.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-star-rating/js/star-rating.min.js') }}"></script>
 <script>
 //删除 标签
 var doDeleteTag	= function(ev){
@@ -172,6 +178,14 @@ var loadTag = function (){
 }
 
 jQuery(function(){
+	// star
+	jQuery('#user-log-satisfy').rating({
+		showClear: false,
+        step: 1,
+        starCaptions: {1: '非常不满意', 2: '不满意', 3: '一般', 4: '满意', 5: '非常满意'},
+        starCaptionClasses: {1: 'text-danger', 2: 'text-warning', 3: 'text-info', 4: 'text-primary', 5: 'text-success'}
+    });
+	
 	// timepicker init
 	jQuery('[name="user_log_time"]').daterangepicker({
         timePicker: true, 

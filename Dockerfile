@@ -30,4 +30,4 @@ COPY apprun /usr/local/bin/
 # Make port 80 available to the world outside this container
 EXPOSE 80 27017
 
-CMD apprun
+CMD "mongod && uwsgi /app/uwsgi.ini && nginx -g 'daemon off;'"

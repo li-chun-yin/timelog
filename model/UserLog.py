@@ -59,6 +59,7 @@ class Client(object):
             'tag_name'          : data['tag_name'],
             'tag_color'         : data['tag_color'],
             'content'           : data['content'],
+            'satisfy'           : int(data['satisfy']) if 'satisfy' in data else 6,
             'start_time'        : data['start_time'],
             'end_time'          : data['end_time'],
         }
@@ -66,8 +67,6 @@ class Client(object):
         if '_id' in data and data['_id']:
             user_log['_id'] = ObjectId(data['_id'])
             
-        print(user_log)
-        exit
         self._collection.save(user_log)
         
         return user_log

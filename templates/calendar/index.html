@@ -202,7 +202,8 @@ jQuery(function () {
 				tag_name		: tag_name,
 				tag_color		: tag_color,
 				user_log_time	: start_log_ymdhis + '-' + end_log_ymdhis,
-				content			: ''
+				content			: '',
+				satisfy			: 3
 			};
 			jQuery.post("{{ url_for('logger_save') }}", post_data, function(json){
 				if(checkAjaxResponse(json)){

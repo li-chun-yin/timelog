@@ -31,6 +31,7 @@ def form(user_log_id=None):
         'tag_name'          : '',
         'tag_color'         : '',
         'content'           : '',
+        'satisfy'           : 6,
         'start_time'        : int(time.time()),
         'end_time'          : int(time.time()),
     }
@@ -107,6 +108,7 @@ def save():
         tag_color       = request.form['tag_color']
         user_log_time   = request.form['user_log_time'].split('-')
         content         = request.form['content']
+        satisfy         = request.form['satisfy']
         
         ulc             = UserLog.Client()
 
@@ -117,6 +119,7 @@ def save():
             'tag_name'          : tag_name,
             'tag_color'         : tag_color,
             'content'           : content,
+            'satisfy'           : int(satisfy) * int(2),
             'start_time'        : unixtime(user_log_time[0], '%Y年%m月%d日 %H:%M:%S'),
             'end_time'          : unixtime(user_log_time[1], '%Y年%m月%d日 %H:%M:%S'),
         }
