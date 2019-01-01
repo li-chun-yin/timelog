@@ -108,7 +108,11 @@ var init_events_container = function(){
 				tag_name    : jQuery('#new-event').val(),
 				tag_color   : jQuery(this).data('color')
 	        };
+	        
+	    	var ev	= this;
+	    	jQuery(ev).prop('disabled', true);
 	        jQuery.post("{{ url_for('calendar_tag_add') }}", post_data, function(json){
+		    	jQuery(ev).prop('disabled', false);
 				if(checkAjaxResponse(json)){
 					init_events_container();
 				}

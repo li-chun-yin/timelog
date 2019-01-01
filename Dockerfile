@@ -22,6 +22,8 @@ RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu trusty/mongodb-
 RUN apt-get update && apt-get install -yq libcurl3 mongodb-org
 RUN mkdir -p /data/db
 
+RUN ln -sf /usr/share/zoneinfo//Asia/Shanghai /etc/localtime
+
 # Make port 80 available to the world outside this container
 EXPOSE 5000 27017
 

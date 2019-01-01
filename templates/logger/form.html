@@ -78,7 +78,12 @@ var doDeleteTag	= function(ev){
 
 //删除
 var doRemove	= function(ev){
+	if(jQuery(ev).closest('form').find('[name="_id"]').val() == ''){
+		return;
+	}
+	jQuery(ev).prop('disabled', true);
 	jQuery.post("{{ url_for('logger_remove') }}", jQuery(ev).closest('form').serialize(), function(json){
+		jQuery(ev).prop('disabled', false);
 		if(checkAjaxResponse(json)){
 			alert('删除成功')
 			location.href	= "{{ url_for('logger_form') }}";
@@ -88,7 +93,9 @@ var doRemove	= function(ev){
 
 //保存
 var doSave	= function(ev){
+	jQuery(ev).prop('disabled', true);
 	jQuery.post("{{ url_for('logger_save') }}", jQuery(ev).closest('form').serialize(), function(json){
+		jQuery(ev).prop('disabled', false);
 		if(checkAjaxResponse(json)){
 			alert('操作成功');
 			jQuery(ev).closest('form').find('[name="_id"]').val(json._id);
@@ -168,7 +175,10 @@ var loadTag = function (){
 	        	tag_name    : jQuery('#new-event').val(),
 	        	tag_color   : jQuery(this).data('color')
 	        };
+	    	var ev	= this;
+	    	jQuery(ev).prop('disabled', true);
 	        jQuery.post("{{ url_for('calendar_tag_add') }}", post_data, function(json){
+		    	jQuery(ev).prop('disabled', false);
 	        	if(checkAjaxResponse(json)){
 	        		loadTag();
 	        	}
