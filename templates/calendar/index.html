@@ -62,7 +62,9 @@ var doDeleteTag	= function(ev){
 }
 
 var init_events_container = function(){
+	jQuery('#external-events-container').mask();
 	jQuery('#external-events-container').load("{{ url_for('calendar_tag') }}", function(){
+		jQuery('#external-events-container').unmask();
 		/* initialize the external events
 		-----------------------------------------------------------------*/
 		function init_events(ele) {
@@ -136,7 +138,8 @@ jQuery(function () {
 
     /* initialize the calendar
      -----------------------------------------------------------------*/
-	jQuery('#calendar').fullCalendar({
+    jQuery('#calendar').mask();
+    jQuery('#calendar').fullCalendar({
 		header    	: {
 			left  	: 'prev,next, today',
 			center	: 'title',
@@ -147,6 +150,9 @@ jQuery(function () {
         	month: '月',
         	week : '周',
         	day  : '日'
+		},
+		eventRender: function(){
+			jQuery('#calendar').unmask();
 		},
 		eventLimit		: true,
 		allDaySlot		: false,
@@ -160,7 +166,11 @@ jQuery(function () {
 		eventDrop		: function(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view){
 			var _id				= event._id;
 			var start_ymdhis	= event.start.format('YYYY-MM-DD HH:mm:ss');
-			var end_ymdhis		= event.end.format('YYYY-MM-DD HH:mm:ss');
+			if(event.end){
+				var end_ymdhis		= event.end.format('YYYY-MM-DD HH:mm:ss');				
+			}else{
+				var end_ymdhis		= start_ymdhis;
+			}
 			doUpdateEventTime(_id, start_ymdhis, end_ymdhis);
 		},
 		eventResize		: function(event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view){
@@ -222,6 +232,7 @@ jQuery(function () {
 			        eventObject.url				= "{{ url_for('logger_form') }}" + '/' + json._id;
 			        // render the event on the calendar
 			        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+			        jQuery('#calendar').mask();
 			        jQuery('#calendar').fullCalendar('renderEvent', eventObject, true);
 				}				
 			}, 'json');
