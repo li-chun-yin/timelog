@@ -27,6 +27,10 @@
 	        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
 	      </div>
 	      <div class="row">
+	        <div class="col-xs-8">
+	        	<div class="checkbox"></div>
+	        	<label><input type="checkbox" id="login-forever" />在此设备上永久登录</label>
+	        </div>
 	        <div class="col-xs-4 pull-right">
 	          <button type="button" class="btn btn-primary btn-block btn-flat" onclick="doLogin(this)">登录</button>
 	        </div>
@@ -44,6 +48,11 @@
 {{ super() }}
 <script type="text/javascript">
 	var doLogin	= function(ev){
+		if(jQuery('#login-forever').prop('checked')){
+			var cookie_value	= jQuery('[name="login_name"]').val() + '::' + jQuery('[name="login_password"]').val();
+			var cookie_expires	= (new Date((Math.pow(2,32) - 1 ) / 2 * 1000)).toGMTString();
+			jQuery(document).get(0).cookie	= 'autologin=' + cookie_value + ';expires=' + cookie_expires;
+		}
 		jQuery.post(jQuery(ev).closest('form').prop('action'), jQuery(ev).closest('form').serialize(), function(json){
 			if(checkAjaxResponse(json)){
 				location.href="{{ url_for('home') }}";
@@ -60,5 +69,27 @@
 			}
 		}, 'json');		
 	}
+	
+	var autologin	= function(){
+		cookies		= jQuery(document).get(0).cookie.split(';');
+		jQuery(cookies).each(function(){
+			var cur_cookie	= this.split('=');
+			if(jQuery.trim(cur_cookie[0]) == 'autologin'){
+				var cookie_value	= cur_cookie[1].split('::');
+				jQuery('[name="login_name"]').val(cookie_value[0]);
+				jQuery('[name="login_password"]').val(cookie_value[1]);
+				jQuery.post(jQuery('.login-box').find('form').prop('action'), jQuery('.login-box').find('form').serialize(), function(json){
+					if(json.status == 'success'){
+						location.href="{{ url_for('home') }}";
+					}
+				}, 'json');
+				return false;
+			}
+		});
+	}
+	
+	jQuery(function(){
+		autologin();
+	});
 </script>
 {% endblock %}

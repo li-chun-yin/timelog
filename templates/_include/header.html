@@ -1,15 +1,31 @@
 <header class="main-header">
-  <a href="#" class="logo">
-    <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>Python Hello</b></span>
-  </a>
-  <nav class="navbar navbar-static-top">
-    <div class="navbar-custom-menu">
-      <ul class="nav navbar-nav">
-        <li><a href="{{ url_for('calendar') }}">我的日历</a></li>
-        <li><a href="{{ url_for('logger_form') }}">添加日志</a></li>
-        <li><a href="{{ url_for('logout') }}">注销</a></li>
-      </ul>
-    </div>
-  </nav>
+	<a href="#" class="logo">
+		<!-- logo for regular state and mobile devices -->
+		<span class="logo-lg"><b>Python Hello</b></span>
+  	</a>
+	<nav class="navbar navbar-static-top">
+		<div class="navbar-custom-menu">
+			<ul class="nav navbar-nav">
+				<li><a href="{{ url_for('calendar') }}">我的日历</a></li>
+				<li><a href="{{ url_for('logger_form') }}">添加日志</a></li>
+				<li>
+					<a href="javascript:void(0);" onclick="doLogout()">注销</a>
+					<script>
+						var doLogout	= function(){
+							cookies   = jQuery(document).get(0).cookie.split(';');
+						    jQuery(cookies).each(function(){
+								var cookie  = this.split('=');
+								if(jQuery.trim(cookie[0]) == 'autologin'){
+									var cookie_value	= '';
+									var cookie_expires	= (new Date(1)).toGMTString();
+									jQuery(document).get(0).cookie	= 'autologin=' + cookie_value + ';expires=' + cookie_expires;  	
+                				}
+							});            
+							location.href	= "{{ url_for('logout') }}";
+						}
+					</script>
+				</li>
+			</ul>
+		</div>
+	</nav>
 </header>
