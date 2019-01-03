@@ -4,44 +4,52 @@
 
 {% block body %}
 <div class="login-box">
-  <div class="login-logo">Python 学习</div>
-  <!-- /.login-logo -->
-  <div class="login-box-body">
-    <p class="login-box-msg">授权登录</p>
-    <form action="{{ url_for('login_action') }}" method="post">
-      <div class="form-group has-feedback">
-        <input type="text" name="login_name" class="form-control" placeholder="请输入email">
-        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-      </div>
-      <div id="sendmail-container">
-	      <div class="row">
-	        <div class="col-md-5 pull-right">
-	          <button type="button" class="btn btn-primary btn-block btn-flat" onclick="doSendEmail(this)">发送授权邮件</button>
-	        </div>
-	        <!-- /.col -->
-	      </div>
-      </div>
-      <div id="loginbtn-container" style="display:none">      
-	      <div class="form-group has-feedback">
-	        <input type="password" name="login_password" class="form-control" placeholder="请输入授权验证码">
-	        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-	      </div>
-	      <div class="row">
-	        <div class="col-xs-8">
-	        	<div class="checkbox"></div>
-	        	<label><input type="checkbox" id="login-forever" />在此设备上永久登录</label>
-	        </div>
-	        <div class="col-xs-4 pull-right">
-	          <button type="button" class="btn btn-primary btn-block btn-flat" onclick="doLogin(this)">登录</button>
-	        </div>
-	        <!-- /.col -->
-	      </div>
-      </div>
-    </form>
-  </div>
-  <!-- /.login-box-body -->
+	<div class="login-logo">licy.top</div>
+	<!-- /.login-logo -->
+	<div class="login-box-body">
+		<p class="login-box-msg">授权登录</p>
+		<form action="{{ url_for('login_action') }}" method="post">
+			<div class="form-group has-feedback">
+				<input type="text" name="login_name" class="form-control" placeholder="请输入email">
+				<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+			</div>
+			<div id="sendmail-container">
+				<div class="row">
+					<div class="col-md-5 pull-right">
+						<input type="button" class="btn btn-primary btn-block btn-flat" onclick="doSendEmail(this)" value="发送授权邮件" />
+					</div><!-- /.col -->
+				</div>
+			</div>
+			<div id="loginbtn-container" style="display:none">      
+				<div class="form-group has-feedback">
+					<input type="password" name="login_password" class="form-control" placeholder="请输入授权验证码">
+					<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+				</div>
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="checkbox">
+							<label><input type="checkbox" id="login-forever" />在此设备上永久登录</label>
+						</div>
+					</div>
+			        <div class="col-xs-4 pull-right">
+						<input type="button" class="btn btn-primary btn-block btn-flat" onclick="doLogin(this)" value="登录">
+					</div><!-- /.col -->
+				</div>
+			</div>
+    	</form>
+	</div><!-- /.login-box-body -->
+	<div class="row">
+		<div class="col-md-12">
+	  		<strong>Copyright &copy; 2018 <a href="#">李春寅 licy2013#aliyun.com</a>.</strong>
+	  	</div>
+		<div class="col-md-12">
+	  		友情链接：<a href="http://www.asbamboo.com" target="_blank">班布聚支付</a>
+	  	</div>
+	</div>
 </div>
 <!-- /.login-box -->
+
+  
 {% endblock %}
 
 {% block bodyscript %}
