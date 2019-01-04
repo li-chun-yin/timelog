@@ -3,7 +3,8 @@
 {% block stylesheet %}
 	{{ super() }}
 	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='timepicker/bootstrap-timepicker.min.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-star-rating/css/star-rating.min.css') }}">
 {% endblock %}
 
@@ -38,10 +39,26 @@
 	                			</div> 
 	              			</div>
 	              			<div class="form-group">
-	                			<label>时间范围</label>
-	               				<input type="text" name="user_log_time" class="form-control" 
-	               					value="{{ user_log_item.start_time|date('%Y年%m月%d日 %H:%M:%S') }}-{{ user_log_item.end_time|date('%Y年%m月%d日 %H:%M:%S') }}" 
-	               				/>
+	                			<label>开始时间</label>
+	                			<div class="row">
+	                				<div class="col-md-12">
+		               					<input type="text" name="user_log_start_ymd" class="form-control pull-left" value="{{ user_log_item.start_time|date('%Y-%m-%d') }}" style="width:120px;" />
+		               					<div class="bootstrap-timepicker pull-left" style="width:100px;">
+		               						<input type="text" name="user_log_start_his" class="form-control timepicker" value="{{ user_log_item.start_time|date('%H:%M:%S') }}" />
+		               					</div>
+	               					</div>
+               					</div>
+							</div>
+	              			<div class="form-group">
+	                			<label>结束时间</label>
+	                			<div class="row">
+	                				<div class="col-md-12">
+			               				<input type="text" name="user_log_end_ymd" class="form-control pull-left" value="{{ user_log_item.end_time|date('%Y-%m-%d') }}" style="width:120px;" />
+		               					<div class="bootstrap-timepicker pull-left" style="width:100px;">
+				               				<input type="text" name="user_log_end_his" class="form-control timepicker" value="{{ user_log_item.end_time|date('%H:%M:%S') }}"/>
+		               					</div>
+	               					</div>
+               					</div>
 							</div>
 							<div class="form-group">
 								<label>事件内容</label>
@@ -67,7 +84,9 @@
 {% block bodyscript %}
 {{ super() }}
 <script src="{{ url_for('static', filename='moment/moment.js') }}"></script>
-<script src="{{ url_for('static', filename='bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js') }}"></script>
+<script src="{{ url_for('static', filename='timepicker/bootstrap-timepicker.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-star-rating/js/star-rating.min.js') }}"></script>
 <script>
@@ -197,26 +216,16 @@ jQuery(function(){
     });
 	
 	// timepicker init
-	jQuery('[name="user_log_time"]').daterangepicker({
-        timePicker: true, 
-        timePickerIncrement: 1, 
-        timePicker24Hour: true,
-        timePickerSeconds: true,
-        format: 'YYYY年MM月DD日 hh:mm:ss',
-		locale: {
-			"direction": "ltr",
-			"format": "YYYY年MM月DD日 HH:mm:ss",
-            "separator": "-",
-            "applyLabel": "确定",
-            "cancelLabel": "取消",
-            "fromLabel": "从",
-            "toLabel": "到",
-            "customRangeLabel": "自定义",
-			"daysOfWeek": ["日", "一", "二", "三", "四", "五", "六"],
-            "monthNames": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-            "firstDay": 0
-        },
+	jQuery('[name="user_log_start_ymd"],[name="user_log_end_ymd"]').datepicker({
+		format: 'yyyy-mm-dd',
+		language: 'zh-CN'
 	});
+	$('.timepicker').timepicker({
+		maxHours: 24,
+		showMeridian: false,
+		showSeconds: true,
+		showInputs: false
+	})
 });
 </script>
 {% endblock %}

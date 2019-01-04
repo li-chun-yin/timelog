@@ -7,7 +7,7 @@ from model import UserTag, UserLog
 from excepts.SystemException import SystemException
 from excepts.MessageException import MessageException
 import json
-from lib.datetime import unixtime
+from lib.datetime import unixtime, datetime_format
 
 @login.IfNotLoginThenRedirectToHome
 def form(user_log_id=None):
@@ -25,6 +25,10 @@ def form(user_log_id=None):
     tag_options     = utc.findByUser(login_user['_id'])        
 
     #user log
+    nowtime                 = int(time.time())
+    now_hour_time           = datetime_format(nowtime, '%Y-%m-%d %H:00:00')
+    init_start_time         = unixtime(now_hour_time, '%Y-%m-%d %H:%M:%S')
+    init_end_time           = unixtime(now_hour_time, '%Y-%m-%d %H:%M:%S')
     user_log_item           = {
         'user_id'           : login_user['_id'],
         'tag_id'            : '',
@@ -32,8 +36,8 @@ def form(user_log_id=None):
         'tag_color'         : '',
         'content'           : '',
         'satisfy'           : 6,
-        'start_time'        : int(time.time()),
-        'end_time'          : int(time.time()),
+        'start_time'        : init_start_time,
+        'end_time'          : init_end_time,
     }
     if user_log_id:
         user_log_item       = ulc.findById(user_log_id)
@@ -101,14 +105,17 @@ def remove():
 @login.IfNotLoginThenRedirectToHome
 def save():
     try:        
-        login_user      = login.getUser()
-        _id             = request.form['_id']
-        tag_id          = request.form['tag_id']
-        tag_name        = request.form['tag_name']
-        tag_color       = request.form['tag_color']
-        user_log_time   = request.form['user_log_time'].split('-')
-        content         = request.form['content']
-        satisfy         = request.form['satisfy']
+        login_user          = login.getUser()
+        _id                 = request.form['_id']
+        tag_id              = request.form['tag_id']
+        tag_name            = request.form['tag_name']
+        tag_color           = request.form['tag_color']
+        user_log_start_ymd  = request.form['user_log_start_ymd']
+        user_log_start_his  = request.form['user_log_start_his']
+        user_log_end_ymd    = request.form['user_log_end_ymd']
+        user_log_end_his    = request.form['user_log_end_his']
+        content             = request.form['content']
+        satisfy             = request.form['satisfy']
         
         ulc             = UserLog.Client()
 
@@ -120,8 +127,8 @@ def save():
             'tag_color'         : tag_color,
             'content'           : content,
             'satisfy'           : int(satisfy) * int(2),
-            'start_time'        : unixtime(user_log_time[0], '%Y年%m月%d日 %H:%M:%S'),
-            'end_time'          : unixtime(user_log_time[1], '%Y年%m月%d日 %H:%M:%S'),
+            'start_time'        : unixtime(user_log_start_ymd + ' ' + user_log_start_his, '%Y-%m-%d %H:%M:%S'),
+            'end_time'          : unixtime(user_log_end_ymd + ' ' + user_log_end_his, '%Y-%m-%d %H:%M:%S'),
         }
         
         user_log_item           = ulc.save(user_log_item)

@@ -194,8 +194,10 @@ jQuery(function () {
 				var d			= date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
 				start_ymdhis	= y + '-' + m + '-' + d + ' 00:00:00';
 				end_ymdhis		= y + '-' + m + '-' + d + ' 23:59:59';
-				start_log_ymdhis= y + '年' + m + '月' + d + '日 00:00:00';
-				end_log_ymdhis	= y + '年' + m + '月' + d + '日 23:59:59';
+				start_log_ymd	= y + '-' + m + '-' + d;
+				start_log_his	= '00:00:00';
+				end_log_ymd		= y + '-' + m + '-' + d;
+				end_log_his		= '23:59:59';
 			}else{
 				var y			= start_time[0];
 				var m			= start_time[1] >= 9 ? start_time[1] + 1 : '0' + (start_time[1] + 1);
@@ -206,18 +208,23 @@ jQuery(function () {
 				var eh			= start_time[3] >= 9 ? start_time[3] + 1 : '0' + (start_time[3] + 1);
 				start_ymdhis	= y + '-' + m + '-' + d + ' ' + h + ':' + i + ':' + s;
 				end_ymdhis		= y + '-' + m + '-' + d + ' ' + eh + ':' + i + ':' + s;				
-				start_log_ymdhis= y + '年' + m + '月' + d + '日 ' + h + ':' + i + ':' + s;
-				end_log_ymdhis	= y + '年' + m + '月' + d + '日 ' + eh + ':' + i + ':' + s;	
+				start_log_ymd	= y + '-' + m + '-' + d;
+				start_log_his	= h + ':' + i + ':' + s;
+				end_log_ymd		= y + '-' + m + '-' + d;
+				end_log_his		= eh + ':' + i + ':' + s;
 			}
 
 			var post_data	= {
-				_id				: '',
-				tag_id			: tag_id,
-				tag_name		: tag_name,
-				tag_color		: tag_color,
-				user_log_time	: start_log_ymdhis + '-' + end_log_ymdhis,
-				content			: '',
-				satisfy			: 3
+				_id					: '',
+				tag_id				: tag_id,
+				tag_name			: tag_name,
+				tag_color			: tag_color,
+				user_log_start_ymd	: start_log_ymd,
+				user_log_start_his	: start_log_his,
+				user_log_end_ymd	: end_log_ymd,
+				user_log_end_his	: end_log_his,
+				content				: '',
+				satisfy				: 3
 			};
 			jQuery.post("{{ url_for('logger_save') }}", post_data, function(json){
 				if(checkAjaxResponse(json)){
