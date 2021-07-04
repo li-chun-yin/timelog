@@ -54,8 +54,12 @@ def email():
         msg['Subject']  = 'TIMELOG MAIL 登录验证码' 
         msg['From']     = current_app.config['SYSTEM_EMAIL_ACCOUNT']
         msg['To']       = login_name
-        
-        smtp            = smtplib.SMTP(current_app.config['SYSTEM_EMAIL_HOST'])
+
+        if current_app.config['SYSTEM_EMAIL_PROTOCOL'] == 'ssl':
+            smtp            = smtplib.SMTP_SSL(current_app.config['SYSTEM_EMAIL_HOST'], current_app.config['SYSTEM_EMAIL_PORT'])
+        else:
+            smtp            = smtplib.SMTP(current_app.config['SYSTEM_EMAIL_HOST'], current_app.config['SYSTEM_EMAIL_PORT'])
+
         smtp.login(current_app.config['SYSTEM_EMAIL_ACCOUNT'], current_app.config['SYSTEM_EMAIL_PASSWORD'])
         smtp.sendmail(current_app.config['SYSTEM_EMAIL_ACCOUNT'], [login_name], msg.as_string())
         smtp.quit()
