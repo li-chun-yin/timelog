@@ -22,7 +22,7 @@ http://timelog-demo.licy.top
 ===============================
 
 * 拉取git代码
-    https://github.com/li-chun-yin/timelog.git
+    git clone https://github.com/li-chun-yin/timelog.git
 * 进到代码的根目录
     cd timelog
 * 修改目录下的配置文件
